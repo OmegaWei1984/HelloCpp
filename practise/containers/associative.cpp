@@ -3,6 +3,7 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <string>
+#include <cassert>
 
 using namespace std;
 
@@ -13,6 +14,9 @@ int main(void) {
     s.insert(1);
     s.insert(2);
     assert(s.size() == 3);
+
+    set<string> s1 = {"hello", "set", "just test"};
+    assert(s1.size() == 3);
 
     map<string, int> m = {{"a", 0}, {"b", 1}, {"c", 2}};
     assert(m.size() == 3);
