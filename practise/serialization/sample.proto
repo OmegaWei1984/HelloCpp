@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+package sample;
+
+message Vendor
+{
+    required uint32 id = 1;
+    required string name = 2;
+    required bool valid = 3;
+    optional string tel = 4;
+}
