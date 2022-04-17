@@ -31,5 +31,8 @@ int main(void) {
     unordered_map<string, int> um = {{"a", 0}, {"b", 1}, {"c", 2}};
     assert(um.size() == 3);
 
+    for (auto& [key, value] : um)
+        if (value > 1) value *= 2;
+
     return 0;
 }
