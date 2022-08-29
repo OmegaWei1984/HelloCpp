@@ -1,11 +1,44 @@
+#include <algorithm>
+
+class shared_count
+{
+private:
+    long count_;
+
+public:
+    shared_count() : count_(1){};
+
+    void add_count()
+    {
+        ++count_;
+    }
+
+    long reduce_count()
+    {
+        return --count_;
+    }
+
+    long get_count()
+    {
+        return count_;
+    }
+};
+
 template <typename T>
 class smart_ptr
 {
 private:
     T *ptr_;
+    shared_count *shared_count_;
 
 public:
-    explicit smart_ptr(T *ptr = nullptr) : prt_(ptr) {}
+    explicit smart_ptr(T *ptr = nullptr) : ptr_(ptr)
+    {
+        if (ptr)
+        {
+            shared_count_ = new shared_count();
+        }
+    }
 
     template <typename U>
     smart_ptr(smart_ptr<U> &&other)
@@ -20,7 +53,11 @@ public:
 
     ~smart_ptr()
     {
-        delete ptr_;
+        if (ptr_ && !shared_count_->reduce_count())
+        {
+            delete ptr_;
+            delete shared_count_;
+        }
     }
 
     T *get() const
