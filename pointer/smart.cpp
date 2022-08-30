@@ -40,13 +40,22 @@ public:
         }
     }
 
-    template <typename U>
-    smart_ptr(smart_ptr<U> &&other)
+    smart_ptr(const smart_ptr& other)
+    {
+        ptr_ = other.ptr_;
+        if (ptr_) {
+            other.shared_count_->add_count();
+            shared_count_ = other.shared_count_;
+        }
+    }
+
+    smart_ptr(smart_ptr&& other)
     {
         ptr_ = other.release();
     }
 
-    smart_ptr(smart_ptr &&other)
+    template <typename U>
+    smart_ptr(smart_ptr<U> &&other)
     {
         ptr_ = other.release();
     }
@@ -97,5 +106,6 @@ public:
     {
         using std::swap;
         swap(ptr_, rhs.ptr);
+        swap(shared_count_, rhs.shared_count_);
     }
 };
