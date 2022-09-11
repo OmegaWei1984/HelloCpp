@@ -61,12 +61,43 @@ int main()
         make_shared<Song>(L"Thalía", L"Entre El Mar y Una Estrella")};
 
     vector<shared_ptr<Song>> v2;
-    remove_copy_if(v.begin(), v.end(), back_inserter(v2), [](shared_ptr<Song> s){
-        return s->artist.compare(L"Bob Dylan") == 0;
-    });
-    for (const auto& s : v2) {
+    remove_copy_if(v.begin(), v.end(), back_inserter(v2),
+        [](shared_ptr<Song> s) {
+            return s->artist.compare(L"Bob Dylan") == 0;
+        }
+    );
+    for (const auto &s : v2)
+    {
         std::wcout << s->title << std::endl;
     }
+
     // Example 4
+    vector<shared_ptr<MediaAsset>> assets{
+        make_shared<Song>(L"Himesh Reshammiya", L"Tera Surroor"),
+        make_shared<Song>(L"Penaz Masani", L"Tu Dil De De"),
+        make_shared<Photo>(L"2011-04-06", L"Redmond, WA", L"Soccer field at Microsoft.")};
+
+    vector<shared_ptr<MediaAsset>> photos;
+
+    copy_if(assets.begin(), assets.end(), back_inserter(photos), [](shared_ptr<MediaAsset> p) -> bool {
+        shared_ptr<Photo> temp = dynamic_pointer_cast<Photo>(p);
+        return temp.get() != nullptr;
+    });
+
+    for (const auto& p : photos) {
+        std::wcout << (static_pointer_cast<Photo>(p))->location << std::endl;
+    }
+
     // Example 6
+    auto song1 = new Song(L"Village People", L"YMCA");
+    auto song2 = new Song(L"Village People", L"YMCA");
+
+    shared_ptr<Song> p1(song1);
+    shared_ptr<Song> p2(song2);
+
+    std::wcout << "p1 < p2 == " << std::boolalpha << (p1 < p2) << endl;
+    assert(p1 < p2);
+    assert(p2 > p1);
+    std::wcout << "p1 == p2 == " << std::boolalpha << (p1 == p2) << endl;
+    assert(p1 != p2);
 }
