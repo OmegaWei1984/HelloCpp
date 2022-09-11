@@ -64,10 +64,11 @@ public:
     }
 
     template <typename U>
-    smart_ptr(const smart_ptr<U>& other) noexcept
+    smart_ptr(const smart_ptr<U> &other) noexcept
     {
         ptr_ = other.ptr_;
-        if (ptr_) {
+        if (ptr_)
+        {
             other.shared_count_->add_count();
             shared_count_ = other.shared_count_;
         }
@@ -77,17 +78,19 @@ public:
     smart_ptr(smart_ptr<U> &&other) noexcept
     {
         ptr_ = other.ptr_;
-        if (ptr_) {
+        if (ptr_)
+        {
             shared_count_ = other.shared_count_;
             other.ptr_ = nullptr;
         }
     }
 
     template <typename U>
-    smart_ptr(const smart_ptr<U>& other, T*ptr) noexcept
+    smart_ptr(const smart_ptr<U> &other, T *ptr) noexcept
     {
         ptr_ = other.ptr_;
-        if (ptr_) {
+        if (ptr_)
+        {
             other.shared_count_->add_count();
             shared_count_ = other.shared_count_;
         }
@@ -121,9 +124,12 @@ public:
 
     long use_count() const noexcept
     {
-        if (ptr_) {
+        if (ptr_)
+        {
             return shared_count_->get_count();
-        } else {
+        }
+        else
+        {
             return 0;
         }
     }
@@ -135,3 +141,28 @@ public:
         swap(shared_count_, rhs.shared_count_);
     }
 };
+
+template <typename T, typename U>
+smart_ptr<T> static_pointer_cast(const smart_ptr<U> &other) noexcept
+{
+    T *ptr = static_cast<T *>(other.get());
+    return smart_ptr<T>(other, ptr);
+}
+template <typename T, typename U>
+smart_ptr<T> reinterpret_pointer_cast(const smart_ptr<U> &other) noexcept
+{
+    T *ptr = reinterpret_cast<T *>(other.get());
+    return smart_ptr<T>(other, ptr);
+}
+template <typename T, typename U>
+smart_ptr<T> const_pointer_cast(const smart_ptr<U> &other) noexcept
+{
+    T *ptr = const_cast<T *>(other.get());
+    return smart_ptr<T>(other, ptr);
+}
+template <typename T, typename U>
+smart_ptr<T> dynamic_pointer_cast(const smart_ptr<U> &other) noexcept
+{
+    T *ptr = dynamic_cast<T *>(other.get());
+    return smart_ptr<T>(other, ptr);
+}
