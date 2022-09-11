@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <utility>
 
 class shared_count
 {
@@ -32,32 +33,15 @@ private:
     shared_count *shared_count_;
 
 public:
+    template <typename U>
+    friend class smart_ptr;
+
     explicit smart_ptr(T *ptr = nullptr) : ptr_(ptr)
     {
         if (ptr)
         {
             shared_count_ = new shared_count();
         }
-    }
-
-    smart_ptr(const smart_ptr& other)
-    {
-        ptr_ = other.ptr_;
-        if (ptr_) {
-            other.shared_count_->add_count();
-            shared_count_ = other.shared_count_;
-        }
-    }
-
-    smart_ptr(smart_ptr&& other)
-    {
-        ptr_ = other.release();
-    }
-
-    template <typename U>
-    smart_ptr(smart_ptr<U> &&other)
-    {
-        ptr_ = other.release();
     }
 
     ~smart_ptr()
@@ -69,37 +53,79 @@ public:
         }
     }
 
-    T *get() const
+    smart_ptr(const smart_ptr &other)
+    {
+        ptr_ = other.ptr_;
+        if (ptr_)
+        {
+            other.shared_count_->add_count();
+            shared_count_ = other.shared_count_;
+        }
+    }
+
+    template <typename U>
+    smart_ptr(const smart_ptr<U>& other) noexcept
+    {
+        ptr_ = other.ptr_;
+        if (ptr_) {
+            other.shared_count_->add_count();
+            shared_count_ = other.shared_count_;
+        }
+    }
+
+    template <typename U>
+    smart_ptr(smart_ptr<U> &&other) noexcept
+    {
+        ptr_ = other.ptr_;
+        if (ptr_) {
+            shared_count_ = other.shared_count_;
+            other.ptr_ = nullptr;
+        }
+    }
+
+    template <typename U>
+    smart_ptr(const smart_ptr<U>& other, T*ptr) noexcept
+    {
+        ptr_ = other.ptr_;
+        if (ptr_) {
+            other.shared_count_->add_count();
+            shared_count_ = other.shared_count_;
+        }
+    }
+
+    T *get() const noexcept
     {
         return ptr_;
     }
 
-    T &operator*() const
+    T &operator*() const noexcept
     {
         return *ptr_;
     }
 
-    T *operator->() const
+    T *operator->() const noexcept
     {
         return ptr_;
     }
 
-    smart_ptr &operator=(smart_ptr rhs)
+    smart_ptr &operator=(smart_ptr rhs) noexcept
     {
         rhs.swap(*this);
         return *this;
     }
 
-    operator bool() const
+    operator bool() const noexcept
     {
         return ptr_;
     }
 
-    T *release()
+    long use_count() const noexcept
     {
-        T *ptr = ptr_;
-        ptr_ = nullptr;
-        return ptr;
+        if (ptr_) {
+            return shared_count_->get_count();
+        } else {
+            return 0;
+        }
     }
 
     void swap(smart_ptr &rhs)
