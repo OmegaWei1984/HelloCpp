@@ -87,6 +87,34 @@ Obj complicated(int n)
     }
 }
 
+void foo(const shape &)
+{
+    puts("foo(const shape&)");
+}
+
+void foo(shape &&)
+{
+    puts("foo(shape&&)");
+}
+
+void bar(const shape &s)
+{
+    puts("bar(const shape&)");
+    foo(s);
+}
+
+void bar(shape &&s)
+{
+    puts("bar(shape&&)");
+    foo(s);
+}
+
+template <typename T>
+void bar(T &&s)
+{
+    foo(forward<T>(s));
+}
+
 int main(void)
 {
     // int i, j, k = 0, *p = &k;
@@ -128,6 +156,14 @@ int main(void)
 
     cout << "test 5" << endl;
     complicated(42);
+
+    cout << "test 6" << endl;
+    bar(circle());
+
+    cout << "test 7" << endl;
+    circle temp;
+    bar(temp);
+    bar(circle());
 
     return 0;
 }
