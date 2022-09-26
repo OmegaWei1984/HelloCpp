@@ -2,9 +2,11 @@
 #include <array>
 #include <vector>
 #include <deque>
+#include <queue>
 #include <forward_list>
 #include <list>
 #include <cassert>
+#include "output_container.h"
 
 using namespace std;
 
@@ -67,6 +69,16 @@ int main(void)
     v2.emplace_back();
     v2.emplace_back();
     v2.emplace_back();
+
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+    pq.push({1, 1});
+    pq.push({2, 2});
+    pq.push({0, 7});
+    pq.push({4, 3});
+    while (!pq.empty()) {
+        cout << pq.top() << endl;
+        pq.pop();
+    }
 
     return 0;
 }

@@ -2,18 +2,22 @@
 #include <vector>
 #include <array>
 #include <set>
+#include <list>
+#include <string>
 #include <iostream>
+#include "output_container.h"
 
 using namespace std;
 
-int main(void) {
+int main(void)
+{
     vector<int> v = {1, 2, 3};
     auto n1 = count(begin(v), end(v), 1);
     auto n2 = count_if(begin(v), end(v),
-        [](auto x) {
-            return x > 2;
-        }
-    );
+                       [](auto x)
+                       {
+                           return x > 2;
+                       });
 
     vector<int> v2 = {1, 2, 3, 4, 5};
     auto iter1 = v2.begin();
@@ -35,11 +39,13 @@ int main(void) {
     assert(n == prev(e, 2));
 
     vector<int> v3 = {3, 5, 1, 7, 10};
-    for (const auto &x : v3) {
+    for (const auto &x : v3)
+    {
         cout << x << ",";
     }
     cout << endl;
-    auto print = [](const auto &x) {
+    auto print = [](const auto &x)
+    {
         cout << x << ",";
     };
     for_each(v3.cbegin(), v3.cend(), print);
@@ -62,15 +68,15 @@ int main(void) {
     vector<int> v6 = {3, 5, 1, 7, 10};
     for_each(v6.cbegin(), v6.cend(), print);
     cout << endl;
-    auto mid_iter = next(v6.begin(), v6.size()/2);
-    cout << *mid_iter << endl; 
+    auto mid_iter = next(v6.begin(), v6.size() / 2);
+    cout << *mid_iter << endl;
 
     vector<int> v7 = {3, 5, 1, 7, 10};
-    auto pos = partition(v7.begin(), v7.end(), 
-        [](const auto &x) {
-            return x > 9;
-        }
-    );
+    auto pos = partition(v7.begin(), v7.end(),
+                         [](const auto &x)
+                         {
+                             return x > 9;
+                         });
     for_each(v7.begin(), pos, print);
     cout << endl;
 
@@ -97,15 +103,34 @@ int main(void) {
     pos4 = find(v9.begin(), v9.end(), 3);
 
     pos4 = find_if(v9.begin(), v9.end(),
-        [](auto x) {
-            return x % 2 == 0;
-        }
-    );
+                   [](auto x)
+                   {
+                       return x % 2 == 0;
+                   });
     cout << *pos4 << endl;
 
-    array<int, 2> arr = {3, 5};
+    array<int, 2> arr2 = {3, 5};
     decltype(v9.end()) pos5;
-    pos5 = find_first_of(v9.begin(), v9.end(), arr.begin(), arr.end());
+    pos5 = find_first_of(v9.begin(), v9.end(), arr2.begin(), arr2.end());
+
+    list<int> l = {1, 7, 2, 8, 5, 0};
+    vector<int> v10 = {1, 7, 2, 8, 5, 0};
+    sort(v10.begin(), v10.end());
+    // sort(l.begin(), l.end());
+    l.sort();
+    cout << l << endl;
+
+    vector<int> v11 = {42, 11, 5, 19, 22, 1};
+    sort(v11.begin(), v11.end(), greater<int>());
+    cout << v11 << endl;
+
+    cout << hex;
+    auto hp = hash<int *>();
+    cout << "hash(nullptr)    = " << hp(nullptr) << endl;
+    cout << "hash(v11.data()) = " << hp(v11.data()) << endl;
+    cout << "v11.data()       = " << static_cast<void *>(v11.data()) << endl;
+    auto hs = hash<string>();
+    cout << "hash(\"hello\")    = " << hs(string("hello")) << endl;
 
     return 0;
 }

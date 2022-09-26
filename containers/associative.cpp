@@ -4,6 +4,8 @@
 #include <unordered_map>
 #include <string>
 #include <cassert>
+#include <iostream>
+#include "output_container.h"
 
 using namespace std;
 
@@ -33,6 +35,9 @@ int main(void) {
 
     for (auto& [key, value] : um)
         if (value > 1) value *= 2;
+
+    multiset<int, greater<int>> ms = {1, 2, 5, 1, 3, 4};
+    cout << ms << endl;
 
     return 0;
 }
