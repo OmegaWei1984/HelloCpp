@@ -10,6 +10,8 @@
 
 using namespace std;
 
+typedef array<char, 8> str_hello;
+
 class Obj1
 {
 public:
@@ -79,6 +81,11 @@ int main(void)
         cout << pq.top() << endl;
         pq.pop();
     }
+
+    vector<str_hello> v3;
+    str_hello hello1{"hello"};
+    v3.emplace_back(hello1);
+    cout << v3 << endl;
 
     return 0;
 }
