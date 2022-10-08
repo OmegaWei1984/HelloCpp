@@ -1,4 +1,7 @@
 #include <iostream>
+#include <vector>
+#include <type_traits>
+#include <memory>
 
 template <int n>
 struct factorial
@@ -73,11 +76,35 @@ struct Sum
     typedef SumLoop<0, n> type;
 };
 
+template <template <typename, typename> class OutContainer = std::vector, typename F, class R>
+auto fmap(F &&f, R &&inputs)
+{
+    typedef std::decay_t<decltype(f(*inputs.begin()))> result_type;
+    OutContainer<result_type, std::allocator<result_type>> result;
+    for (auto &&item : inputs)
+    {
+        result.push_back(f(item));
+    }
+    return result;
+}
+
+int incr(int x)
+{
+    return x + 1;
+}
+
 int main(void)
 {
     std::cout << factorial<10>::value << std::endl;
 
-    std::cout <<  While<Sum<10>::type>::type::value << std::endl;
+    std::cout << While<Sum<10>::type>::type::value << std::endl;
+
+    std::vector<int> v{1, 3, 5, 7, 9};
+    auto res = fmap(incr, v);
+    for (const auto &e : res)
+    {
+        std::cout << e << std::endl;
+    }
 
     return 0;
 }
