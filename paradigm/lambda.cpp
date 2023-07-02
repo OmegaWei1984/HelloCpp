@@ -1,8 +1,14 @@
 #include <algorithm>
+#include <array>
 #include <cassert>
+#include <functional>
 #include <iostream>
 #include <ranges>
 #include <vector>
+#include <map>
+#include <numeric>
+
+using namespace std:: placeholders;
 
 // C++ 98 function object
 struct adder
@@ -76,5 +82,22 @@ int main(void)
     for (int i : std::views::transform(std::views::filter(ints, even), square)) {
         std::cout << i << ' ';
     }
+    std::cout << std::endl;
+    std::array arr{1, 2, 3, 4, 5};
+    auto sum = std::accumulate(arr.begin(), arr.end(), 0, [](auto x, auto y) {
+            return x + y;
+        });
+    std::cout << sum << std::endl;
+    std::vector<int> v2 = {0, 1, 2, 3};
+    transform(v2.begin(), v2.end(), v2.begin(), std::bind(std::plus<>(), _1, 2));
+    for (const int &i : v2) {
+        std::cout << i << ' ';
+    }
+    std::cout << std::endl;
+    std::map<std::string, std::function<int(int, int)>> op_dict {
+        { "+", [](int x, int y) { return x + y; }},
+        { "-", [](int x, int y) { return x - y; }}
+    };
+    std::cout << op_dict.at("+")(2, 2) << " " << op_dict.at("-")(142, 100) << std::endl;
     return 0;
 }
